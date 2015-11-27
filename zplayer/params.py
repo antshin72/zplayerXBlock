@@ -26,7 +26,8 @@ def get_video_info(source):
     else:
         source_info = []
 
-    return json.dumps(source_info)
+    return source_info
+    #return json.dumps(source_info)
 
 
 def get_caption_info(caption_info):
@@ -39,10 +40,12 @@ def get_caption_info(caption_info):
     if caption_info:
 
         response = urllib2.urlopen(caption_info)
-        caption_data = json.load(response)
+        #caption_data = json.load(response)
+        caption_data = response
 
     else:
-        caption_data = json.dumps([])
+        #caption_data = json.dumps([])
+        caption_data = []
 
     return caption_data
 
@@ -67,4 +70,5 @@ def get_player_info(lang='ko', preload='auto', controls=True, width='100%', heig
         "playbackRates": speed,
     }
 
-    return json.dumps(player_info)
+    return player_info
+    #return json.dumps(player_info)

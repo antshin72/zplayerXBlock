@@ -113,7 +113,10 @@ class ZplayerXBlock(XBlock):
         elif self.end_time != "":
             fullUrl += "#t=0," + self.end_time
 
+        local_resource_url=self.runtime.local_resource_url(self, 'public/swf/zplayer.swf')
+
         context = {
+            'display_name': self.display_name,
             'video_id': self.video_id,
             'allow_download': self.allow_download,
             'source_text': self.source_text,
@@ -128,29 +131,18 @@ class ZplayerXBlock(XBlock):
             'video_poster': self.video_poster,
             'video_title': self.video_title,
         }
+
         html = self.render_template('static/html/zplayer_view.html', context)
 
         frag = Fragment(html)
-        # frag.add_css(self.load_resource("static/css/video-js.min.css"))
-        # frag.add_css(self.load_resource("static/css/videojs.css"))
         frag.add_css(self.load_resource("static/css/zplayer.css"))
-        # frag.add_javascript(self.load_resource("static/js/video-js.js"))
-        # frag.add_javascript(self.load_resource("static/js/videojs_view.js"))
         frag.add_javascript(self.load_resource("static/js/zplayer.js"))
-        frag.add_javascript(self.load_resource("static/js/lang/ko.js"))
+        #frag.add_javascript(self.load_resource("static/js/lang/ko.js")) ##한글 등의 멀티바이트 코드 연동시 에러남
         frag.add_javascript(self.load_resource("static/js/zplayer_view.js"))
 
-        frag.initialize_js('zplayerXBlockInitView')
-
-        """
-        todo frag.initialize_js 의 파라미터 처리 확인하여 연동 해야 함.
-        frag.initialize_js('initContent', {'id_name': self.video_id, 'player_info': player_info,
+        frag.initialize_js('zplayerXBlockInitView', {'id_name': self.video_id, 'player_info': player_info,
                                            'source_info': source_list, 'video_title': self.video_title,
                                            'video_poster': self.video_poster, 'caption_info': caption_list})
-        """
-
-
-
 
         return frag
 
