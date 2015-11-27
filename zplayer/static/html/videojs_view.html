@@ -1,0 +1,77 @@
+<div class="videojs_block">
+    <style scoped>.vjs-menu-item{margin-bottom:0 !important}</style>
+    <h2>{{ display_name }}</h2>
+    <video class="video-js vjs-default-skin zplayer" id="zplayer"></video>
+    {% if allow_download or source_url != "" %}
+    <ul>
+        {% if allow_download %}
+        <li class="video-download-button">
+            <a href="{{ url }}" download>Download the video</a>
+        </li>
+        {% endif %}
+        {% if source_url != "" %}
+        <li class="video-download-button">
+            <a href="{{ source_url }}" download>{% if source_text == "" %}Download the source document{% else %}{{ source_text }}{% endif %}</a>
+        </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
+
+<script>
+	var zp = zplayer('#zplayer', {
+		"language": "{{ video_lang }}", // 컨트롤러 언어팩
+		"preload": "{{ preload }}",  // 프리로드처리
+//		"autoplay": true,   // 자동실행여, default:false
+		'controls': true,   // 컨트롤러 노출여부, default:false
+//		'customControlsOnMobile' : false,    // 모바일에서 zplayer 컨트롤러 출력 여부, default:false
+//		"width": 600,    // 비디오 가로 사이즈, default:300
+		"width": {{ video_width }},    // 비디오 가로 사이즈, default:300
+//		"height": 400,    // 비디오 세로 사이즈, default:150
+		"height": {{ video_height }},    // 비디오 세로 사이즈, default:150
+		"playbackRates": [0.5, 1, 1.5, 2],  // 재생속도 html5 player only
+	})
+		//  sample 1# 단일 mp4인 경우
+//			.src('http://125.251.50.38:8081/MovieServiceHost/ebs/std/1/1/1_48.mp4')
+	//					.clip('http://mme.npcomms.kr:1935/vod/mp4:bd.mp4/playlist.m3u8')
+
+
+	// 	sample 2# 단일 youtube인 경우
+	//					.clip({
+	//						source: 'https://www.youtube.com/watch?v=7NMhjmLGRak',
+	//						title: 'Youtube'
+	//					})
+
+
+	//  sample 3# multisource  rtmp인 경우
+	//					.clip([
+	////						"http://mme.npcomms.kr:1935/vod/mp4:bd.mp4/playlist.m3u8",
+	////						"rtsp://mme.npcomms.kr:1935/vod/bd.mp4",
+	////						"rtmp://mme.npcomms.kr:1935/vod/mp4:bd.mp4"
+	//					])
+
+
+	//  sample 4# resolution : this is not supported this version.
+	//			.clip([
+	//				{src: "http://video-js.zencoder.com/oceans-clip.mp4", label: '360', is_hd: true},
+	//				{src: 'http://video.2by.kr/Happy.mp4', default: true, label: '720p', is_hd: true},
+	//				{src: "http://video-js.zencoder.com/oceans-clip.webm", label: '240p'},
+	//				{src: "http://video-js.zencoder.com/oceans-clip.ogv", label: '240i'}
+	//			])
+					.clip({
+	'source': [
+		{src: 'http://video.2by.kr/Happy.mp4', default: true, label: '720p', is_hd: true},
+//		{src: "http://125.251.50.38:8081/MovieServiceHost/ebs/std/1/1/1_48.mp4", label: '360', is_hd: true},
+//		{src: "http://video-js.zencoder.com/oceans-clip.webm", label: '240p'},
+//		{src: "http://video-js.zencoder.com/oceans-clip.ogv", label: '240i'}
+	],
+			title: '{{ video_title }}',
+			poster: '{{ video_poster }}',
+			tracks: [
+		{kind: 'captions', src: 'captions.ko.vtt', srclang: 'ko', label: '한국어', default: true},
+		{kind: 'captions', src: 'captions.vtt', srclang: 'en', label: '영어'}
+	]
+	})
+
+
+</script>

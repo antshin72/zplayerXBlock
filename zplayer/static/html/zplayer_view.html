@@ -1,0 +1,19 @@
+<div class="videojs_block">
+    <style scoped>.vjs-menu-item{margin-bottom:0 !important}</style>
+    <h2>{{ display_name }}</h2>
+    <video class="zplayer" id="zplayer"></video>
+    {% if allow_download or source_url != "" %}
+    <ul>
+        {% if allow_download %}
+        <li class="video-download-button">
+            <a href="{{ url }}" download>Download the video</a>
+        </li>
+        {% endif %}
+        {% if source_url != "" %}
+        <li class="video-download-button">
+            <a href="{{ source_url }}" download>{% if source_text == "" %}Download the source document{% else %}{{ source_text }}{% endif %}</a>
+        </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
