@@ -97,7 +97,8 @@ vjs.options = {
 
 	'html5': {},
 	'flash': {
-		"swf": '/swf/zplayer.swf'
+		//"swf": '/swf/zplayer.swf'
+		"swf": 'http://zplayer.npcomms.kr/swf/zplayer.swf'
 	},
 	//new techOrder
 	'youtube': {},

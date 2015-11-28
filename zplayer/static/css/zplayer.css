@@ -9,8 +9,8 @@ The control icons are from a custom font. Each icon corresponds to a character
 */
 @font-face {
   font-family: 'VideoJS';
-  src: url('/css/font/vjs.eot');
-  src: url('/css/font/vjs.eot?#iefix') format('embedded-opentype'), url('/css/font/vjs.woff') format('woff'), url('/css/font/vjs.ttf') format('truetype'), url('/css/font/vjs.svg#icomoon') format('svg');
+  src: url('http://zplayer.npcomms.kr/font/vjs.eot');
+  src: url('http://zplayer.npcomms.kr/font/vjs.eot?#iefix') format('embedded-opentype'), url('http://zplayer.npcomms.kr/font/vjs.woff') format('woff'), url('http://zplayer.npcomms.kr/font/vjs.ttf') format('truetype'), url('http://zplayer.npcomms.kr/font/vjs.svg#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -635,7 +635,7 @@ The control icons are from a custom font. Each icon corresponds to a character
 }
 .zplayer.vjs-error .vjs-loading-spinner {
   display: none;
-  background-image: url("bars.svg");
+  background-image: url("http://zplayer.npcomms.kr/bars.svg");
   position: absolute;
   top: 0;
   left: 0;
