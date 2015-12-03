@@ -9,8 +9,8 @@ The control icons are from a custom font. Each icon corresponds to a character
 */
 @font-face {
   font-family: 'VideoJS';
-  src: url('/static/workbench/css/font/vjs.eot');
-  src: url('/static/workbench/css/font/vjs.eot?#iefix') format('embedded-opentype'), url('/static/workbench/css/font/vjs.woff') format('woff'), url('/static/workbench/css/font/vjs.ttf') format('truetype'), url('/static/workbench/css/font/vjs.svg#icomoon') format('svg');
+  src: url('http://zplayer.npcomms.kr/font/vjs.eot');
+  src: url('http://zplayer.npcomms.kr/font/vjs.eot?#iefix') format('embedded-opentype'), url('http://zplayer.npcomms.kr/font/vjs.woff') format('woff'), url('http://zplayer.npcomms.kr/font/vjs.ttf') format('truetype'), url('http://zplayer.npcomms.kr/font/vjs.svg#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }

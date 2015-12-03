@@ -1,8 +1,4 @@
-/**
- * Created by muti on 15. 11. 23..
- */
-/* Javascript for videojsXBlock. */
-function videojsXBlockInitStudio(runtime, element) {
+function zplayerXBlockInitStudio(runtime, element) {
 
     $(element).find('.action-cancel').bind('click', function() {
         runtime.notify('cancel', {});
@@ -10,23 +6,34 @@ function videojsXBlockInitStudio(runtime, element) {
 
     $(element).find('.action-save').bind('click', function() {
         var data = {
-            'display_name': $('#videojs_edit_display_name').val(),
-            'url': $('#videojs_edit_url').val(),
-            'allow_download': $('#videojs_edit_allow_download').val(),
-            'source_text': $('#videojs_edit_source_text').val(),
-            'source_url': $('#videojs_edit_source_url').val(),
-            'start_time': $('#videojs_edit_start_time').val(),
-            'end_time': $('#videojs_edit_end_time').val()
+            'display_name': $("#zplayer_edit_display_name").val(),
+            'source_url': $("#zplayer_edit_url").val(),
+            'allow_download': $("#zplayer_edit_allow_download").val(),
+            'allow_caption_download': $("#zplayer_edit_allow_caption_download").val(),
+            'video_poster': $("#zplayer_edit_poster").val(),
+            'studio_modify': "True",
+            'caption_info': [],
+
+            'video_id': $("#video_id").val(),
+            'video_width': $("#video_width").val(),
+            'video_height': $("#video_height").val(),
+            'video_lang': $("#video_lang").val(),
+            'preload': "auto",
         };
+
 
         runtime.notify('save', {state: 'start'});
 
-        var handlerUrl = runtime.handlerUrl(element, 'save_videojs');
+        var handlerUrl = runtime.handlerUrl(element, 'save_data');
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
             if (response.result === 'success') {
-                runtime.notify('save', {state: 'end'});
+                runtime.notify('save', {state: 'start'});
                 // Reload the whole page :
                 // window.location.reload(false);
+                $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
+                  runtime.notify('save', {state: 'end'});
+                });
+                window.location.reload(false);
             } else {
                 runtime.notify('error', {msg: response.message})
             }

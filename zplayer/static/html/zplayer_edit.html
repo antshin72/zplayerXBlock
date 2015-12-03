@@ -1,69 +1,127 @@
+<input type="hidden" id="caption_upload_url" value="{{ caption_url }}">
+<input type="hidden" id="delete_url" value="{{ delete_url }}">
+<input type="hidden" id="caption_lang">
+<input type="hidden" id="caption_label">
+<input type="hidden" value="{{ video_id }}" id="video_id">
+<input type="hidden" value="{{ video_lang }}" id="video_lang">
+<input type="hidden" value="{{ preload }}" id="preload">
+<input type="hidden" value="{{ video_width }}" id="video_width">
+<input type="hidden" value="{{ video_height }}" id="video_height">
 <div class="wrapper-comp-settings editor-with-buttons is-active" id="settings-tab">
     <ul class="list-input settings-list">
-        
+
          <li class="field comp-setting-entry is-set">
             <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_display_name">Display Name</label>
-                <input class="input setting-input" id="videojs_edit_display_name" value="{{ display_name }}" type="text">
+                <label class="label setting-label" for="zplayer_edit_display_name">표시할 구성요소 이름</label>
+                <input class="input setting-input" id="zplayer_edit_display_name" value="{{ display_name }}" type="text" placeholder="VIDEO">
             </div>
-            <span class="tip setting-help">This name appears in the horizontal navigation at the top of the page.</span>
+            <span class="tip setting-help">해당 동영상 콘텐츠 표시명을 입력합니다.</span>
         </li>
-        
+
         <li class="field comp-setting-entry is-set">
             <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_url">Video URL</label>
-                <input class="input setting-input" id="videojs_edit_url" value="{{ url }}" type="text">
+                <label class="label setting-label" for="zplayer_edit_url">비디오 URL 경로</label>
+                <input class="input setting-input" id="zplayer_edit_url" value="{{ source_url }}" type="text" placeholder="비디오 URL을 입력해 주세요.">
             </div>
-            <span class="tip setting-help">The URL for your video.</span>
+            <span class="tip setting-help">Video URL입니다 비디오 파일의 URL을 링크시키세요.</span>
         </li>
-        
+
         <li class="field comp-setting-entry is-set">
             <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_allow_download">Video Download Allowed</label>
-                <select class="input setting-input" id="videojs_edit_allow_download">
+                <label class="label setting-label" for="zplayer_edit_poster">비디오 썸네일 URL 경로</label>
+                <input class="input setting-input" id="zplayer_edit_poster" value="{{ video_poster }}" type="text" placeholder="비디오 썸네일 URL을 입력해 주세요.">
+            </div>
+            <span class="tip setting-help">Video URL입니다 비디오 파일의 URL을 링크시키세요.</span>
+        </li>
+
+        <li class="field comp-setting-entry is-set">
+            <div class="wrapper-comp-setting">
+                <label class="label setting-label" for="zplayer_caption_submit">자막 파일 등록하기</label>
+
+                <select class="input setting-input zplayer_edit_caption_lang" id="zplayer_edit_caption_lang">
+                	<option value="" selected="true">언어셋 선택</option>
+                    <option value="ko">한국어</option>
+                    <option value="eng">영어</option>
+                    <option value="ja">일본어</option>
+                    <option value="zh-CN">중국어(북경어)</option>
+                    <option value="fr">프랑스어</option>
+                    <option value="ru">러시아어</option>
+                    <option value="de">독일어</option>
+                    <option value="es">스페인어</option>
+                    <option value="it">이탈리어</option>
+                    <option value="ar">아랍어</option>
+                    <option value="bg">불가리</option>
+                    <option value="ca">카탈루냐</option>
+                    <option value="hu">헝가리어</option>
+                    <option value="nl">네덜란드어</option>
+                    <option value="pt-BR">포루투칼</option>
+                    <option value="tr">터키어</option>
+                    <option value="uk">영어(영국식)</option>
+                    <option value="vi">베트남</option>
+                    <option value="zh-TW">중국어(광둥어)</option>
+                </select>
+
+
+
+                <a class="button action-primary zplayer-button-submit" href="#caption_modal" id="zplayer_caption_submit" type="button">업로드</a>
+
+            </div>
+            <span class="tip setting-help">
+                <ul id="caption_list"></ul>
+            </span>
+
+        </li>
+
+        <li class="field comp-setting-entry is-set">
+            <div class="wrapper-comp-setting">
+                <label class="label setting-label" for="zplayer_edit_allow_download">다운로드 여부</label>
+                <select class="input setting-input" id="zplayer_edit_allow_download">
                     <option value="True" {% if allow_download %}selected{% endif %}>True</option>
                     <option value="False" {% if not allow_download %}selected{% endif %}>False</option>
                 </select>
             </div>
-            <span class="tip setting-help">Allow students to download this video.</span>
+            <span class="tip setting-help">비디오 다운로드 허용여부를 선택합니다.</span>
+
+
+            <div class="wrapper-comp-setting">
+                <label class="label setting-label" for="zplayer_edit_allow_caption_download">자막 다운로드</label>
+                <select class="input setting-input" id="zplayer_edit_allow_caption_download">
+                    <option value="True" {% if allow_caption_download %}selected{% endif %}>True</option>
+                    <option value="False" {% if not allow_caption_download %}selected{% endif %}>False</option>
+                </select>
+            </div>
+            <span class="tip setting-help">자막파일 다운로드 허용여부를 선택합니다.</span>
+
         </li>
-        
-        <li class="field comp-setting-entry is-set">
-            <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_source_text">Source document button text</label>
-                <input class="input setting-input" id="videojs_edit_source_text" value="{{ source_text }}" type="text" placeholder="Default : Download the source document">
-            </div>
-            <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_source_url">Source document URL</label>
-                <input class="input setting-input" id="videojs_edit_source_url" value="{{ source_url }}" type="text">
-            </div>
-            <span class="tip setting-help">Add a download link for the source file of your video. Use it for example to provide the PowerPoint or PDF file used for this video.</span>
-        </li>
-        
-        <li class="field comp-setting-entry is-set">
-            <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_start_time">Start time</label>
-                <input class="input setting-input" id="videojs_edit_start_time" value="{{ start_time }}" type="text">
-            </div>
-            <div class="wrapper-comp-setting">
-                <label class="label setting-label" for="videojs_edit_end_time">End time</label>
-                <input class="input setting-input" id="videojs_edit_end_time" value="{{ end_time }}" type="text">
-            </div>
-            <span class="tip setting-help">The start and end time of your video. Equivalent to 'video.mp4#t=startTime,endTime' in the url.</span>
-        </li>
-        
+
     </ul>
-    
+
     <div class="xblock-actions">
         <ul>
             <li class="action-item">
-                <a href="#" class="button action-primary action-save">Save</a>
+                <a href="#" class="button action-primary action-save">저장</a>
             </li>
             <li class="action-item">
-                <a href="#" class="button action-cancel">Cancel</a>
+                <a href="#" class="button action-cancel">취소</a>
             </li>
         </ul>
     </div>
+
+    <a href="#x" class="overlay" id="caption_modal"></a>
+    <div class="popup" id="overlay">
+        <div class="modal-dialog">
+              <h2>자막등록</h2>
+            <div class="modal-body">
+                <input type="file" class="input setting-input" id="caption_modal_file" name="caption_modal_file">
+                <hr>
+                <span class="tip setting-help">자막파일은 .srt, .smi 파일을 지원합니다.</span>
+            </div>
+            <div class="modal-footer">
+
+                <a href="#" class="button actions-primary" id="caption_upload">업로드</a>
+                <a href="#close" class="button actions-primary" id="caption_cancel">취소</a>
+
+            </div>
+        </div>
+    </div>
 </div>
-
-

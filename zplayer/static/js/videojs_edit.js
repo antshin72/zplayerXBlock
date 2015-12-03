@@ -1,5 +1,5 @@
 /* Javascript for videojsXBlock. */
-function videojsXBlockInitStudio(runtime, element) {
+function zplayerXBlockInitStudio(runtime, element) {
 
     $(element).find('.action-cancel').bind('click', function() {
         runtime.notify('cancel', {});

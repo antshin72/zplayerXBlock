@@ -6,14 +6,10 @@
     <ul>
         {% if allow_download %}
         <li class="video-download-button">
-            <a href="{{ url }}" download>Download the video</a>
+            <a href="{{ source_url }}" download>동영상 다운로드</a>
         </li>
         {% endif %}
-        {% if source_url != "" %}
-        <li class="video-download-button">
-            <a href="{{ source_url }}" download>{% if source_text == "" %}Download the source document{% else %}{{ source_text }}{% endif %}</a>
-        </li>
-        {% endif %}
+
     </ul>
     {% endif %}
 </div>

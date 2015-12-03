@@ -97,8 +97,7 @@ vjs.options = {
 
 	'html5': {},
 	'flash': {
-		//"swf": '/swf/zplayer.swf'
-		"swf": 'http://zplayer.npcomms.kr/swf/zplayer.swf'
+		"swf": 'zplayer.swf'
 	},
 	//new techOrder
 	'youtube': {},
@@ -4222,7 +4221,7 @@ vjs.Player.prototype.createEl = function () {
 	this.on('progress', this.onProgress);
 	this.on('durationchange', this.onDurationChange);
 	this.on('fullscreenchange', this.onFullscreenChange);
-
+	// 이벤트에 따른 데이터 로그설정
 	//this.on(['timeupdate', 'play', 'logger.progress', 'pause', 'ended'], this.onLogger);
 	return el;
 };
@@ -4936,27 +4935,29 @@ vjs.Player.prototype.exitFullWindow = function () {
 	this.trigger('exitFullWindow');
 };
 
-
+// 배열 -> 스트링 -> 오브젝트로 재귀이동
+// source는 컨텐츠 하나의 소스
 vjs.Player.prototype.src = function (source) {
 
 	if (source === undefined) {
 		return this.techGet('src');
 	}
 
-
+	// 스트링 : 오브젝트로 변경
+	// 직접 src를 호출하지 않는 이상 들어올 이유가 없음
 	if (typeof source === 'string') {
 
 		console.log('src string', source);
 		this.src({src: source});
 
-
+		// 배열 : 개별 오브젝트 또는 스트링으로 변경
 	} else if (vjs.obj.isArray(source)) {
 
 		console.log('src array', source);
-
+		//실행가능한 소스 하나만 불러온다.
 		this.sourceList_(source);
 
-
+		// 오브젝트 : 실행
 	} else if (source instanceof Object) {
 
 		if (!window['zplayer'][this.techName]['canPlaySource'](source)) {
@@ -5028,7 +5029,7 @@ vjs.Player.prototype.selectSource = function (sources) {
 			// Loop through each source object
 			for (var a = 0, b = sources; a < b.length; a++) {
 
-				// source
+				// source의 object로 재포맷한다
 				//var source = b[a];
 				var source = b[a];
 
@@ -5547,6 +5548,7 @@ vjs.Player.prototype.playlist_;
 
 vjs.Player.prototype.playrun_ = function () {
 
+	// 목록이 없거나 length를 초과했다면 에러
 	if (this.playlist_.length <= 0 || this.playlist_.length < this.currentIndex) {
 		this.setTimeout(function () {
 			this.error({code: 4, message: this.localize(this.options()['notSupportedMessage'])});
@@ -5554,21 +5556,30 @@ vjs.Player.prototype.playrun_ = function () {
 		return;
 	}
 
+	// 실행할 클립조
 	var c = this.playlist_[this.currentIndex];
+	// pause가 아니면 실행
 	if (!this.paused()) {
 		this.pause();
 	}
 
+	// 포스터
 	if (c.poster) {
 		this.poster(c.poster);
 	}
 
 	// tracks
+	// 기존 tracks 삭제
 	var old_tracks = this.remoteTextTracks();
 	if (old_tracks && old_tracks.length > 0) {
-	    old_tracks.forEach(function (track, i) {
-	        this.removeRemoteTextTrack(track);
-	    });
+	    try{
+            old_tracks.forEach(function (track, i) {
+                this.removeRemoteTextTrack(track);
+            });
+        }catch (e){
+            //console.log(e.message);
+            //console.log(old_tracks);
+        }
 	}
 
 	if (c.hasOwnProperty('tracks')) {
@@ -5582,6 +5593,7 @@ vjs.Player.prototype.playrun_ = function () {
 
 	//thumbnails
 
+	// movie source 추가
 	this.src(c.source);
 };
 vjs.Player.prototype.next = function () {
@@ -5600,6 +5612,7 @@ vjs.Player.prototype.clip = function (source) {
 	// reset
 	this.playlist_ = [];
 	this.playlist_.push(this.clip_(source));
+	// 시퀀스 리셋
 	this.currentIndex = 0;
 	this.playrun_();
 	return this;
@@ -5706,6 +5719,7 @@ vjs.Player.prototype.clipSource_ = function(sources) {
 
 
 
+	console.log("추출", c);
 
 
 	return c;
@@ -6067,7 +6081,8 @@ vjs.ProgressControl.prototype.createEl = function () {
 
 
 /**
- * youtube */
+ * youtube처럼 마우스포인터를 위한 패딩 dom
+ */
 //vjs.SeekHolder = vjs.Slider.extend({
 //    /** @constructor */
 //    init: function (player, options) {
@@ -6352,7 +6367,7 @@ vjs.SeekTip.prototype.mousetime_ = function (e) {
 
 vjs.SeekTip.prototype.position_ = function (e) {
 	var seekBar = this.player_.controlBar.progressControl.seekBar;
-	var x = seekBar.calculateDistancePixel(e, this.el_.style.width);
+	var x = seekBar.calculateDistancePixel(e, this.el_.style.width); // 퍼센트값으로 계산됨
 	return x;
 };
 /**
@@ -8795,6 +8810,7 @@ vjs.Flash.rtmpSourceHandler['canHandleSource'] = function (source) {
 		return 'maybe';
 	}
 
+	//// 만약 확장자가 m3u8이라면 스트리밍으로 처리
 	//var protocol = source.src.split('.').pop().toUpperCase();
 	//if(protocol == 'M3U8') {
 	//    return 'maybe';
