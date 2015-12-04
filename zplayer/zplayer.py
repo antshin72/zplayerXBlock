@@ -4,7 +4,7 @@ __copyright__ = 'npcomms'
 
 """ videojsXBlock main Python class"""
 
-import os
+import os, time
 
 import pkg_resources
 from django.template import Context, Template
@@ -49,11 +49,13 @@ class ZplayerXBlock(XBlock):
     caption_info = List(display_name="자막 정보 URL", default="", scope=Scope.content, help="json형태로 구성된 자막의 정보 취득 URL을 설정합니다.")
 
     """ zplayer script define """
+
+
     video_id = String(display_name="videoplayer dom ID", default="zplayer", scope=Scope.content, help="set Node")
     video_lang = String(display_name="콘트롤러 언어셋", default="ko", scope=Scope.content, help="언어셋 설정을 정의합니다.(기본값: ko [ar,bg,ca,cs,de,es,fr,hu,it,ja,ko,nl,pt-BR,ru,tr,uk,vl,zh-CN,zh-TW])")
     preload = String(display_name="프리로드 처리", default="auto", scope=Scope.content, help="프리로드 처리 설정(기본값 auto)")
-    video_width = Integer(display_name="동영상 가로해상도", default=540, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 540)")
-    video_height = Integer(display_name="동영상 세로해상도", default=304, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 304)")
+    video_width = Integer(display_name="동영상 가로해상도", default=720, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 540)")
+    video_height = Integer(display_name="동영상 세로해상도", default=480, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 304)")
 
     studio_modify = Boolean(display_name="스튜디오 편집모드", default=False, scope=Scope.content, help="스튜디오 저작 처리인지 여부판단 파라미터")
 
@@ -96,7 +98,6 @@ class ZplayerXBlock(XBlock):
 
 
         source_list = params.get_video_info(self.source_url)
-        caption_list = params.get_caption_info(self.caption_info)
 
         player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
 
@@ -130,7 +131,7 @@ class ZplayerXBlock(XBlock):
 
         frag.initialize_js('zplayerXBlockInitView', {'id_name': self.video_id, 'player_info': player_info,
                                            'source_info': source_list,
-                                           'video_poster': self.video_poster, 'caption_info': caption_list,
+                                           'video_poster': self.video_poster, 'caption_info': self.caption_info,
                                                      'studio_modify': self.studio_modify})
 
 
