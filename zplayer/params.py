@@ -5,6 +5,7 @@ __copyright__ = 'npcomms'
 import ast
 import urllib, urllib2
 import json
+import time
 
 def get_video_info(source):
     """
@@ -72,3 +73,12 @@ def get_player_info(lang='ko', preload='auto', controls=True, width='100%', heig
 
     return player_info
     #return json.dumps(player_info)
+
+def get_id():
+    current_milli_time = int(round(time.time() * 1000))
+    # print (current_milli_time)
+    return 'zplay' + str(current_milli_time)
+
+
+if __name__ == "__main__":
+    print get_id()

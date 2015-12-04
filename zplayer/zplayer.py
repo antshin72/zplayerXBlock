@@ -23,6 +23,8 @@ class ZplayerXBlock(XBlock):
     '''
     icon_class = "video"
 
+
+
     '''
     Fields
     '''
@@ -51,7 +53,7 @@ class ZplayerXBlock(XBlock):
     """ zplayer script define """
 
 
-    video_id = String(display_name="videoplayer dom ID", default="zplayer", scope=Scope.content, help="set Node")
+    video_id = String(display_name="videoplayer dom ID", default=params.get_id(), scope=Scope.content, help="set Node")
     video_lang = String(display_name="콘트롤러 언어셋", default="ko", scope=Scope.content, help="언어셋 설정을 정의합니다.(기본값: ko [ar,bg,ca,cs,de,es,fr,hu,it,ja,ko,nl,pt-BR,ru,tr,uk,vl,zh-CN,zh-TW])")
     preload = String(display_name="프리로드 처리", default="auto", scope=Scope.content, help="프리로드 처리 설정(기본값 auto)")
     video_width = Integer(display_name="동영상 가로해상도", default=720, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 540)")
