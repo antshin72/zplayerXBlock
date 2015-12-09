@@ -13,10 +13,14 @@ from xblock.core import XBlock
 from xblock.fields import Scope, Integer, String, Boolean, List
 from xblock.fragment import Fragment
 
-## todo view, headers를참조하여 트래킹로그json구성할것
+
+
+## todo view, headers를참조하여 트래킹로그json구성할
 
 
 import params
+
+
 
 class ZplayerXBlock(XBlock):
 
@@ -57,12 +61,17 @@ class ZplayerXBlock(XBlock):
     video_id = String(display_name="videoplayer dom ID", default=params.get_id(), scope=Scope.content, help="set Node")
     video_lang = String(display_name="콘트롤러 언어셋", default="ko", scope=Scope.content, help="언어셋 설정을 정의합니다.(기본값: ko [ar,bg,ca,cs,de,es,fr,hu,it,ja,ko,nl,pt-BR,ru,tr,uk,vl,zh-CN,zh-TW])")
     preload = String(display_name="프리로드 처리", default="auto", scope=Scope.content, help="프리로드 처리 설정(기본값 auto)")
-    video_width = Integer(display_name="동영상 가로해상도", default=720, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 540)")
-    video_height = Integer(display_name="동영상 세로해상도", default=480, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 304)")
+    video_width = Integer(display_name="동영상 가로해상도", default=800, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 540)")
+    video_height = Integer(display_name="동영상 세로해상도", default=450, scope=Scope.content, help="동영상의 가로해상도를 설정합니다.(기본값: 304)")
 
     studio_modify = Boolean(display_name="스튜디오 편집모드", default=False, scope=Scope.content, help="스튜디오 저작 처리인지 여부판단 파라미터")
 
 
+    #tracking 관련 정보 파라미터
+    tracking_url = String(display_name="tracking url", default="http://mme2.npcomms.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
+    onplay_callback = Integer(display_name="callback second set", default=3, scope=Scope.content, help="트래킹 반복 주기초를 기록")
+    org_id = String(display_name="기관ID", default="edX", scope=Scope.content, help="get Org ID")
+    # user_id = String(display_name="SESSION ID", default="", scope=Scope.content, help="get Session ID")
 
 
     '''
@@ -96,7 +105,7 @@ class ZplayerXBlock(XBlock):
     '''
     Main functions
     '''
-    def student_view(self, context=None):
+    def student_view(self, request, context=None):
 
         #### Edx Info ####
 
@@ -104,23 +113,26 @@ class ZplayerXBlock(XBlock):
 
         source_list = params.get_video_info(self.source_url)
 
-        player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
+        player_info = params.get_player_info(
+            lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height,
+            tracking_url=self.tracking_url, onplay_callback=self.onplay_callback
+        )
 
 
-        ## test용
-        self.caption_info = [
-            {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
-             "kind": "captions", "label": "한글자", "srclang": "ko"},
-            {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
-             "kind": "captions", "label": "한글자막", "srclang": "ko"}
-        ]
-        self.allow_caption_download = True
 
-        course_id = 'aaaa'
-        org_id = 'edX'
-        user_id = 'staff'
+        if request.has_key("activate_block_id"):
+            course_id = request['activate_block_id']
+        else:
+            course_id = ''
 
-
+        # ## test용
+        # self.caption_info = [
+        #     {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
+        #      "kind": "captions", "label": "한글자", "srclang": "ko"},
+        #     {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
+        #      "kind": "captions", "label": "한글자막", "srclang": "ko"}
+        # ]
+        # self.allow_caption_download = True
 
         context = {
             'display_name': self.display_name,
@@ -136,9 +148,11 @@ class ZplayerXBlock(XBlock):
             'video_height': self.video_height,
             'studio_modify': self.studio_modify,
             'course_id': course_id,
-            'org_id': org_id,
-            'user_id': user_id,
+            'org_id': self.org_id,
+            # 'user_id': self.user_id,
         }
+
+
 
         html = self.render_template('static/html/zplayer_view.html', context)
 
@@ -150,7 +164,7 @@ class ZplayerXBlock(XBlock):
 
 
         #test용
-        frag.initialize_js('tracking_info', {'sessionid': '3ei8e89md8hweihulsdjflsdkjf', 'edxloggedin': True, 'username': 'staff'})
+        # frag.initialize_js('tracking_info')
 
         #실제용
         # frag.initialize_js('tracking_info')

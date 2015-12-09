@@ -43,11 +43,9 @@ var zplayerXBlockInitView = function(runtime, element, params) {
 
 
 
-    //var user_info = JSON.parse(getCookie('edx-user-info').stripComma().stripSlashes());
-    var user_info = getCookie('edx-user-info').stripComma().stripSlashes();
-    //var user_info = getCookie('edx-user-info').stripSlashes();
-    //var user_info = getCookie('edx-user-info');
-    $("#username").val(user_info);
+    var user_info = JSON.parse(getCookie('edx-user-info').stripComma().stripSlashes().slice(1,-1));
+    $("#username").val(user_info.username);
+    $("#email").val(user_info.email);
 
 
 

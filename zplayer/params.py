@@ -50,7 +50,10 @@ def get_caption_info(caption_info):
 
     return caption_data
 
-def get_player_info(lang='ko', preload='auto', controls=True, width='100%', height='400', speed=[0.5,1,1.5,2]):
+def get_player_info(
+        lang='ko', preload='auto', controls=True, width='100%', height='400', speed=[0.5,1,1.5,2],
+        tracking_url="http://mme2.npcomms.kr/logging", onplay_callback=3
+):
     """
 
     :param lang:
@@ -59,6 +62,8 @@ def get_player_info(lang='ko', preload='auto', controls=True, width='100%', heig
     :param width:
     :param height:
     :param speed:
+    :param tracking_url
+    :param onplay_callback
     :return:
     """
 
@@ -69,6 +74,9 @@ def get_player_info(lang='ko', preload='auto', controls=True, width='100%', heig
         "width": width,
         "height": height,
         "playbackRates": speed,
+        "tracker": {
+            "url": tracking_url, "onplay_callback": onplay_callback
+        }
     }
 
     return player_info

@@ -1527,6 +1527,7 @@ vjs.log.warn = function () {
     _logType('warn', arguments);
 };
 
+
 // Offset Left
 // getBoundingClientRect technique from John Resig http://ejohn.org/blog/getboundingclientrect-is-awesome/
 vjs.findPosition = function (el) {
@@ -1616,7 +1617,7 @@ vjs.arr.forEach = function (array, callback, thisArg) {
  * @returns {Object}                  The request
  */
 vjs.xhr = function (options, callback) {
-	var XHR, request, urlInfo, winLoc, fileUrl, crossOrigin, abortTimeout, successHandler, errorHandler;
+	var XHR, request, urlInfo, winLoc, fileUrl, crossOrigin, abortTimeout, successHandler, errorHandler, requestData;
 	// If options is a string it's the url
 	if (typeof options === 'string') {
 		options = {
@@ -1718,6 +1719,20 @@ vjs.xhr = function (options, callback) {
 		return errorHandler(err);
 	}
 
+
+    /**
+     * chali5124@gmail.com
+     * apply data
+     */
+    if(typeof options.data === 'string') {
+
+        console.log("data in : ", options.data);
+
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        requestData = options.data;
+    }
+
+
 // withCredentials only supported by XMLHttpRequest2
 	if (options.withCredentials) {
 		request.withCredentials = true;
@@ -1729,7 +1744,7 @@ vjs.xhr = function (options, callback) {
 
 // send the request
 	try {
-		request.send();
+		request.send(requestData);
 	} catch (err) {
 		return errorHandler(err);
 	}
@@ -3998,13 +4013,17 @@ vjs.Player = vjs.Component.extend({
 		this.cache_ = {};
 		// Set poster
 		this.poster_ = options['poster'] || '';
+
+		// Set Tracker
+		this.tracker_ = options['tracker'] || '';
+
+
 		// Set controls
 		this.controls_ = !!options['controls'];
 		// Original tag settings stored in options
 		// now remove immediately so native controls don't flash.
 		// May be turned back on by HTML5 tech if nativeControlsForTouch is true
 		tag.controls = false;
-
 
 		// Use native controls for iOS and Android by default
 		//  until controls are more stable on those devices.
@@ -4016,7 +4035,6 @@ vjs.Player = vjs.Component.extend({
 			// now remove immediately so native controls don't flash.
 			tag.controls = false;
 		}
-
 
 		// we don't want the player to report touch activity on itself
 		// see enableTouchActivity in Component
@@ -4221,16 +4239,70 @@ vjs.Player.prototype.createEl = function () {
 	this.on('progress', this.onProgress);
 	this.on('durationchange', this.onDurationChange);
 	this.on('fullscreenchange', this.onFullscreenChange);
-	// 이벤트에 따른 데이터 로그설정
-	//this.on(['timeupdate', 'play', 'logger.progress', 'pause', 'ended'], this.onLogger);
+
+	// �대깽�몄뿉 �곕Ⅸ �곗씠�� 濡쒓렇�ㅼ젙 'logger.progress',
+	this.on(['firstplay', 'play', 'pause', 'ended', 'seeked', 'volumechange','ratechange', 'screenchange', 'trackchange'], this.onLogger);
 	return el;
 };
 vjs.Player.prototype.onLogger = function (e) {
 
-	//var x = vjs.xhr('http://zplayer.2by.kr', function (ev) {
-	//});
+	console.log('onLogger', e.target.textTracks);
 
-	console.log('onLogger', e); /* RemoveLogging:skip */;
+	var data = {
+		"event": e.type,
+		"time": e.target.currentTime,
+		"total": e.target.duration,
+		"source" : e.target.currentSrc,
+		"volume" :  e.target.volume,
+		"playbackRate" :  e.target.playbackRate,
+		"isFullscreen" :  this.isFullscreen(),
+		"isTrackChanged" : false,
+		"tracks" : {
+			'use_tracks': false,
+			'kind': "kind",
+			'src': "src",
+			'srclang': "ko",
+			'label': "ko"
+		},
+		'course_id': $("#course_id").val(),
+		'org_id': $("#org_id").val(),
+		'path': $("#path").val(),
+		'user_id': $("#user_id").val(),
+		'event_type': "seek_video",
+		'username': $("#username").val(),
+        'email': $("#email").val(),
+        'edxloggin': $("#edxloggin").val()
+	};
+
+
+	switch (e.type) {
+		case 'firstplay':
+		case 'play':
+		case 'pause':
+		case 'ended':
+		case 'seeked':
+		case 'volumechange':
+		case 'ratechange':
+		case 'screenchange':
+			break;
+		case 'trackchange':
+			data.isTrackChanged = true;
+			break;
+	}
+
+	vjs.xhr({
+		uri : this.tracker_.url + "?" + $.param(data),
+		method:'GET',
+		responseType: 'json',
+		data : data
+	}, vjs.bind(this, function (err, response, responseBody) {
+		if (err) {
+			return vjs.log.error(err);
+		}
+		console.log('onLogger Complete', data); /* RemoveLogging:skip */;
+
+	}));
+
 }
 
 
@@ -4935,29 +5007,29 @@ vjs.Player.prototype.exitFullWindow = function () {
 	this.trigger('exitFullWindow');
 };
 
-// 배열 -> 스트링 -> 오브젝트로 재귀이동
-// source는 컨텐츠 하나의 소스
+// 諛곗뿴 -> �ㅽ듃留� -> �ㅻ툕�앺듃濡� �ш��대룞
+// source�� 而⑦뀗痢  �섎굹�� �뚯뒪
 vjs.Player.prototype.src = function (source) {
 
 	if (source === undefined) {
 		return this.techGet('src');
 	}
 
-	// 스트링 : 오브젝트로 변경
-	// 직접 src를 호출하지 않는 이상 들어올 이유가 없음
+	// �ㅽ듃留� : �ㅻ툕�앺듃濡� 蹂�꼍
+	// 吏곸젒 src瑜� �몄텧�섏� �딅뒗 �댁긽 �ㅼ뼱�� �댁쑀媛� �놁쓬
 	if (typeof source === 'string') {
 
 		console.log('src string', source);
 		this.src({src: source});
 
-		// 배열 : 개별 오브젝트 또는 스트링으로 변경
+		// 諛곗뿴 : 媛쒕퀎 �ㅻ툕�앺듃 �먮뒗 �ㅽ듃留곸쑝濡� 蹂�꼍
 	} else if (vjs.obj.isArray(source)) {
 
 		console.log('src array', source);
-		//실행가능한 소스 하나만 불러온다.
+		//�ㅽ뻾媛�뒫�� �뚯뒪 �섎굹留� 遺덈윭�⑤떎.
 		this.sourceList_(source);
 
-		// 오브젝트 : 실행
+		// �ㅻ툕�앺듃 : �ㅽ뻾
 	} else if (source instanceof Object) {
 
 		if (!window['zplayer'][this.techName]['canPlaySource'](source)) {
@@ -5029,7 +5101,7 @@ vjs.Player.prototype.selectSource = function (sources) {
 			// Loop through each source object
 			for (var a = 0, b = sources; a < b.length; a++) {
 
-				// source의 object로 재포맷한다
+				// source�� object濡� �ы룷留룻븳��
 				//var source = b[a];
 				var source = b[a];
 
@@ -5548,7 +5620,7 @@ vjs.Player.prototype.playlist_;
 
 vjs.Player.prototype.playrun_ = function () {
 
-	// 목록이 없거나 length를 초과했다면 에러
+	// 紐⑸줉�� �녾굅�� length瑜� 珥덇낵�덈떎硫� �먮윭
 	if (this.playlist_.length <= 0 || this.playlist_.length < this.currentIndex) {
 		this.setTimeout(function () {
 			this.error({code: 4, message: this.localize(this.options()['notSupportedMessage'])});
@@ -5556,30 +5628,25 @@ vjs.Player.prototype.playrun_ = function () {
 		return;
 	}
 
-	// 실행할 클립조
+	// �ㅽ뻾�  �대┰議�
 	var c = this.playlist_[this.currentIndex];
-	// pause가 아니면 실행
+	// pause媛� �꾨땲硫� �ㅽ뻾
 	if (!this.paused()) {
 		this.pause();
 	}
 
-	// 포스터
+	// �ъ뒪��
 	if (c.poster) {
 		this.poster(c.poster);
 	}
 
 	// tracks
-	// 기존 tracks 삭제
+	// 湲곗〈 tracks ��젣
 	var old_tracks = this.remoteTextTracks();
 	if (old_tracks && old_tracks.length > 0) {
-	    try{
-            old_tracks.forEach(function (track, i) {
-                this.removeRemoteTextTrack(track);
-            });
-        }catch (e){
-            //console.log(e.message);
-            //console.log(old_tracks);
-        }
+	    old_tracks.forEach(function (track, i) {
+	        this.removeRemoteTextTrack(track);
+	    });
 	}
 
 	if (c.hasOwnProperty('tracks')) {
@@ -5593,7 +5660,7 @@ vjs.Player.prototype.playrun_ = function () {
 
 	//thumbnails
 
-	// movie source 추가
+	// movie source 異붽�
 	this.src(c.source);
 };
 vjs.Player.prototype.next = function () {
@@ -5612,7 +5679,7 @@ vjs.Player.prototype.clip = function (source) {
 	// reset
 	this.playlist_ = [];
 	this.playlist_.push(this.clip_(source));
-	// 시퀀스 리셋
+	// �쒗��� 由ъ뀑
 	this.currentIndex = 0;
 	this.playrun_();
 	return this;
@@ -5716,11 +5783,6 @@ vjs.Player.prototype.clipSource_ = function(sources) {
 	} else if (sources instanceof Object) {
 		c.push(sources);
 	}
-
-
-
-	console.log("추출", c);
-
 
 	return c;
 }
@@ -6027,6 +6089,7 @@ vjs.FullscreenToggle = vjs.Button.extend({
    * @instance
    */
   init: function(player, options){
+
     vjs.Button.call(this, player, options);
   }
 });
@@ -6038,15 +6101,23 @@ vjs.FullscreenToggle.prototype.buildCSSClass = function(){
 };
 
 vjs.FullscreenToggle.prototype.onClick = function(){
-  if (!this.player_.isFullscreen()) {
-    this.player_.requestFullscreen();
-    this.controlText_.innerHTML = this.localize('Non-Fullscreen');
-  } else {
-    this.player_.exitFullscreen();
-    this.controlText_.innerHTML = this.localize('Fullscreen');
-  }
+    //this.on(this.player_, 'fullscreen', this.update);
+
+	this.trigger('screenchange');
+
+	if (!this.player_.isFullscreen()) {
+		this.player_.requestFullscreen();
+		this.controlText_.innerHTML = this.localize('Non-Fullscreen');
+	} else {
+		this.player_.exitFullscreen();
+		this.controlText_.innerHTML = this.localize('Fullscreen');
+	}
 };
 
+
+vjs.FullscreenToggle.prototype.update = function () {
+
+};
 
 
 
@@ -6081,7 +6152,7 @@ vjs.ProgressControl.prototype.createEl = function () {
 
 
 /**
- * youtube처럼 마우스포인터를 위한 패딩 dom
+ * youtube泥섎읆 留덉슦�ㅽ룷�명꽣瑜� �꾪븳 �⑤뵫 dom
  */
 //vjs.SeekHolder = vjs.Slider.extend({
 //    /** @constructor */
@@ -6367,7 +6438,7 @@ vjs.SeekTip.prototype.mousetime_ = function (e) {
 
 vjs.SeekTip.prototype.position_ = function (e) {
 	var seekBar = this.player_.controlBar.progressControl.seekBar;
-	var x = seekBar.calculateDistancePixel(e, this.el_.style.width); // 퍼센트값으로 계산됨
+	var x = seekBar.calculateDistancePixel(e, this.el_.style.width); // �쇱꽱�멸컪�쇰줈 怨꾩궛��
 	return x;
 };
 /**
@@ -8810,7 +8881,7 @@ vjs.Flash.rtmpSourceHandler['canHandleSource'] = function (source) {
 		return 'maybe';
 	}
 
-	//// 만약 확장자가 m3u8이라면 스트리밍으로 처리
+	//// 留뚯빟 �뺤옣�먭� m3u8�대씪硫� �ㅽ듃由щ컢�쇰줈 泥섎━
 	//var protocol = source.src.split('.').pop().toUpperCase();
 	//if(protocol == 'M3U8') {
 	//    return 'maybe';
@@ -9622,7 +9693,7 @@ vjs.TextTrackCueList.prototype.getCueById = function(id) {
                         }
                     }
 
-                    this.selected(selected);
+	                this.selected(selected);
                 });
                 tracks.addEventListener('change', changeHandler);
                 player.on('dispose', function () {
@@ -9668,6 +9739,10 @@ vjs.TextTrackCueList.prototype.getCueById = function(id) {
             mode,
             track,
             i = 0;
+
+
+	    // �뚮젅�댁뼱瑜� �꾪븳 trackchange �대깽�� �쒖꽦
+	    this.trigger('trackchange');
 
         vjs.MenuItem.prototype.onClick.call(this);
 

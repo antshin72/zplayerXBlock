@@ -1,11 +1,12 @@
 <div class="videojs_block">
-    <input type="text" name="course_id" id="course_id" value="{{ course_id }}">
-    <input type="text" name="org_id" id="org_id" value="{{ org_id }}">
-    <input type="text" name="path" id="path">
-    <input type="text" name="user_id" id="suer_id" value="{{ user_id }}">
-    <input type="text" name="username" id="username">
+    <input type="hidden" name="course_id" id="course_id" value="{{ course_id }}">
+    <input type="hidden" name="org_id" id="org_id" value="{{ org_id }}">
+    <input type="hidden" name="path" id="path">
+    <input type="text" name="user_id" id="user_id">
+    <input type="hidden" name="email" id="email">
+    <input type="hidden" name="username" id="username">
     <input type="text" name="sessionid" id="sessionid">
-    <input type="text" name="edxloggin" id="edxloggin">
+    <input type="hidden" name="edxloggin" id="edxloggin">
     <style scoped>.vjs-menu-item{margin-bottom:0 !important}</style>
     <h2>{{ display_name }}</h2>
     <video class="zplayer" id="{{ video_id }}"></video>
