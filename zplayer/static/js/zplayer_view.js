@@ -19,7 +19,7 @@ var zplayerXBlockInitView = function(runtime, element, params) {
             source: params.source_info,
             title: params.video_title,
             poster: params.video_poster,
-            tracks: params.tracks
+            tracks: params.tracks,
         });
     }catch(e){
         console.log('Player Initialize Exception: ', e.message);
@@ -32,41 +32,52 @@ var zplayerXBlockInitView = function(runtime, element, params) {
         });
     }
 
+    var edxloggedin = getCookie('edxloggedin');
+
+
+    var sessionid = getCookie('sessionid');
+    $("#sessionid").val(sessionid);
+
+
+    $("#edxloggin").val(edxloggedin);
+
+
+
+    //var user_info = JSON.parse(getCookie('edx-user-info').stripComma().stripSlashes());
+    var user_info = getCookie('edx-user-info').stripComma().stripSlashes();
+    //var user_info = getCookie('edx-user-info').stripSlashes();
+    //var user_info = getCookie('edx-user-info');
+    $("#username").val(user_info);
+
+
+
+    var lms_path = location.pathname;
+    $("#path").val(lms_path);
 
 }
 
 
-var tracking_info = function(runtime, element, params){
+var tracking_info = function(runtime, element){
+    alert('aaaa');
     var edxloggedin = getCookie('edxloggedin');
 
 
-    if(params.sessionid){
+    var sessionid = getCookie('sessionid');
+    $("#sessionid").val(sessionid);
 
-        $("#sessionid").val(params.sessionid);
-    }else{
-        var sessionid = getCookie('sessionid');
-        $("#sessionid").val(sessionid);
-    }
 
-    if(params.edxloggedin){
-        $("#edxlogin").val(params.edxloggedin);
-    }else{
-        $("#edxloggin").val(edxloggedin);
-    }
+    $("#edxloggin").val(edxloggedin);
 
-    if(params.username){
-        $("#username").val(params.username);
-    }else{
+
+
         var user_info = JSON.parse(getCookie('edx-user-info'));
         $("#username").val(user_info.username);
-    }
 
-    if(params.path){
-        $("#path").val(params.path);
-    }else{
+
+
         var lms_path = location.pathname;
         $("#path").val(lms_path);
-    }
+
 }
 
 
@@ -85,4 +96,12 @@ function getCookie( name ){
                     break;
         }
     return '';
+}
+
+String.prototype.stripSlashes = function(){
+    return this.replace(/\\(.)/mg, "$1");
+}
+
+String.prototype.stripComma = function(){
+    return this.replace(/\\054/g, ',');
 }
