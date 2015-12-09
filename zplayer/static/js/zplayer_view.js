@@ -14,55 +14,75 @@ var zplayerXBlockInitView = function(runtime, element, params) {
 
 
 
-    if(params.studio_modify != true){
-        zp = zplayer(params.id_name, params.player_info).clip({
+    try{
+        zplayer(params.id_name, params.player_info).clip({
             source: params.source_info,
             title: params.video_title,
             poster: params.video_poster,
-            tracks: params.caption_info
+            tracks: params.tracks
         });
+    }catch(e){
+        console.log('Player Initialize Exception: ', e.message);
 
-    }else{
-        initContent(params.id_name, params.player_info, params.source_info, params.video_title, params.video_poster, params.caption_info);
+        zplayer(params.id_name, params.player_info).clip({
+            source: params.source_info,
+            title: params.video_title,
+            poster: params.video_poster,
+            //tracks: params.tracks
+        });
     }
 
 
 }
 
 
-/**
- * zplayer Content load
- * @param id_name string node name
- * @param player_info json player property
- * @param source_info json array movie streaming url
- * @param video_title course string title
- * @param video_poster string video thumbnail url
- * @param caption_info json array capiton property
- */
-var initContent = function(id_name, player_info, source_info, video_title, video_poster, caption_info){
+var tracking_info = function(runtime, element, params){
+    var edxloggedin = getCookie('edxloggedin');
 
 
-    try{
-        zp.ready(function(){
-			zp.pause();
+    if(params.sessionid){
 
-			zp.clip({
-				source: source_info,
-				title: video_title,
-				poster: video_poster,
-				tracks: caption_info
-			});
-
-			zp.load();
-
-		});
-    }catch(e){
-        zp = zplayer(id_name, player_info).clip({
-            source: source_info,
-            title: video_title,
-            poster: video_poster,
-            tracks: caption_info
-        });
+        $("#sessionid").val(params.sessionid);
+    }else{
+        var sessionid = getCookie('sessionid');
+        $("#sessionid").val(sessionid);
     }
 
+    if(params.edxloggedin){
+        $("#edxlogin").val(params.edxloggedin);
+    }else{
+        $("#edxloggin").val(edxloggedin);
+    }
+
+    if(params.username){
+        $("#username").val(params.username);
+    }else{
+        var user_info = JSON.parse(getCookie('edx-user-info'));
+        $("#username").val(user_info.username);
+    }
+
+    if(params.path){
+        $("#path").val(params.path);
+    }else{
+        var lms_path = location.pathname;
+        $("#path").val(lms_path);
+    }
+}
+
+
+function getCookie( name ){
+  	var nameOfCookie = name + '=';
+  	var x = 0;
+    while ( x <= document.cookie.length ) {
+        var y = (x+nameOfCookie.length);
+            if ( document.cookie.substring( x, y ) == nameOfCookie ) {
+                if ( (endOfCookie=document.cookie.indexOf( ';', y )) == -1 )
+                    endOfCookie = document.cookie.length;
+                    return unescape( document.cookie.substring( y, endOfCookie ) );
+                }
+                x = document.cookie.indexOf( ' ', x ) + 1;
+                if ( x == 0 )
+                    break;
+        }
+    return '';
 }

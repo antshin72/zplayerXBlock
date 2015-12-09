@@ -1,4 +1,11 @@
 <div class="videojs_block">
+    <input type="text" name="course_id" id="course_id" value="{{ course_id }}">
+    <input type="text" name="org_id" id="org_id" value="{{ org_id }}">
+    <input type="text" name="path" id="path">
+    <input type="text" name="user_id" id="suer_id" value="{{ user_id }}">
+    <input type="text" name="username" id="username">
+    <input type="text" name="sessionid" id="sessionid">
+    <input type="text" name="edxloggin" id="edxloggin">
     <style scoped>.vjs-menu-item{margin-bottom:0 !important}</style>
     <h2>{{ display_name }}</h2>
     <video class="zplayer" id="{{ video_id }}"></video>
@@ -14,13 +21,17 @@
     {% endif %}
 
 
-    {% if allow_caption_download or source_url != "" %}
+    {% if allow_caption_download != "" %}
     <ul>
-        {% if allow_caption_download %}
-        <li class="video-download-button">
-            <a href="{{ source_url }}" download>캡션 다운로드</a>
-        </li>
-        {% endif %}
+    {% if allow_caption_download %}
+        {% for x in caption_info %}
+
+    <li class="video-download-button">
+
+        <a href="{{ x.src }}" download>{{ x.label }} ({{ x.srclang }})</a>
+    </li>
+        {% endfor %}
+    {% endif %}
 
     </ul>
     {% endif %}

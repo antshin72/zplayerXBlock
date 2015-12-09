@@ -84,11 +84,10 @@ var captionAdd = function (caption_url) {
 
             if(jdata.caption_result == true){
             	var caption_data = {
-            		kind: 'caption', src: jdata.caption_url, srclang: jdata.clang, label: jdata.clabel
+            		kind: 'captions', src: jdata.caption_url, srclang: jdata.clang, label: jdata.clabel
             	};
             	caption_data = JSON.stringify(caption_data);
             }else{
-            	console.log(jdata);
             	var caption_data = "";
             }
 
@@ -116,6 +115,7 @@ var captionAdd = function (caption_url) {
 
         }, error: function(jqXHR, textStatus, errorThrown){
         	alert('변환을 실패하였습니다.');
+            alert(errorThrown.message);
 
         },
         complete: function(){

@@ -13,6 +13,8 @@ from xblock.core import XBlock
 from xblock.fields import Scope, Integer, String, Boolean, List
 from xblock.fragment import Fragment
 
+## todo view, headers를참조하여 트래킹로그json구성할것
+
 
 import params
 
@@ -43,7 +45,6 @@ class ZplayerXBlock(XBlock):
         scope=Scope.content,
         help="수강자가 자막파일을 다운로드 허용할지를 설정합니다.")
     video_poster = String(display_name="thumbnail url", default="", scope=Scope.content, help="동영상의 썸네일 경로를 설정합니다.")
-    # video_title = String(display_name="video title", default="kmoocs video title", scope=Scope.content, help="비디오에 대한 제목을 설정합니다")
 
     source_url = String(display_name="영상스트리밍 URL",
                         default="http://vod.kmoocs.kr/vod/2015/09/30/6098c795-39a8-5ec5-9683-49f12ba48dfd.mp4",
@@ -97,19 +98,32 @@ class ZplayerXBlock(XBlock):
     '''
     def student_view(self, context=None):
 
+        #### Edx Info ####
 
+        #### Edx Info End ####
 
         source_list = params.get_video_info(self.source_url)
 
         player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
 
 
+        ## test용
+        self.caption_info = [
+            {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
+             "kind": "captions", "label": "한글자", "srclang": "ko"},
+            {"src": "http://mme2.npcomms.kr/caption/2015/12/07/7fca2eb8-d1ea-530f-b244-3756b62715db.vtt",
+             "kind": "captions", "label": "한글자막", "srclang": "ko"}
+        ]
+        self.allow_caption_download = True
 
-        local_resource_url=self.runtime.local_resource_url(self, 'public/swf/zplayer.swf')
+        course_id = 'aaaa'
+        org_id = 'edX'
+        user_id = 'staff'
+
+
 
         context = {
             'display_name': self.display_name,
-
             'allow_download': self.allow_download,
             'allow_caption_download': self.allow_caption_download,
             'video_poster': self.video_poster,
@@ -121,6 +135,9 @@ class ZplayerXBlock(XBlock):
             'video_width': self.video_width,
             'video_height': self.video_height,
             'studio_modify': self.studio_modify,
+            'course_id': course_id,
+            'org_id': org_id,
+            'user_id': user_id,
         }
 
         html = self.render_template('static/html/zplayer_view.html', context)
@@ -131,10 +148,20 @@ class ZplayerXBlock(XBlock):
         frag.add_javascript(self.load_resource("static/js/lang/ko.js"))
         frag.add_javascript(self.load_resource("static/js/zplayer_view.js"))
 
+
+        #test용
+        frag.initialize_js('tracking_info', {'sessionid': '3ei8e89md8hweihulsdjflsdkjf', 'edxloggedin': True, 'username': 'staff'})
+
+        #실제용
+        # frag.initialize_js('tracking_info')
+
+
         frag.initialize_js('zplayerXBlockInitView', {'id_name': self.video_id, 'player_info': player_info,
                                            'source_info': source_list,
-                                           'video_poster': self.video_poster, 'caption_info': self.caption_info,
+                                           'video_poster': self.video_poster, 'tracks': self.caption_info,
                                                      'studio_modify': self.studio_modify})
+
+
 
 
         # print ";;;;;;;;"
@@ -153,9 +180,8 @@ class ZplayerXBlock(XBlock):
         """
 
         source_list = params.get_video_info(self.source_url)
-        caption_list = params.get_caption_info(self.caption_info)
 
-        player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
+        # player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
 
         context = {
             'display_name': self.display_name,
@@ -174,6 +200,8 @@ class ZplayerXBlock(XBlock):
             'video_height': self.video_height,
             'studio_modify': self.studio_modify,
         }
+
+
         html = self.render_template('static/html/zplayer_edit.html', context)
 
         frag = Fragment(html)
@@ -184,12 +212,8 @@ class ZplayerXBlock(XBlock):
 
         frag.add_javascript(self.load_resource("static/js/zplayer_edit.js"))
         frag.initialize_js('zplayerXBlockInitStudio')
-        # frag.add_javascript(self.load_resource("static/js/videojs_edit.js"))
-        # frag.initialize_js('videojsXBlockInitStudio')
 
 
-        # print "XXXXXXXXXXXXXXXXXX"
-        # print context
 
         return frag
 
@@ -215,9 +239,7 @@ class ZplayerXBlock(XBlock):
 
             self.studio_modify = True
 
-            # print '+++++++++++++++++++++++++++++++', data['studio_modify']
         except Exception, e:
-            # print '=================================', e
             pass
 
         return {
@@ -236,6 +258,7 @@ class ZplayerXBlock(XBlock):
             """\
                 <vertical_demo>
                     <zplayer />
+                    <html_demo><div>Rate the video:</div></html_demo>
                 </vertical_demo>
              """),
         ]
