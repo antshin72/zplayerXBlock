@@ -68,7 +68,7 @@ class ZplayerXBlock(XBlock):
 
 
     #tracking 관련 정보 파라미터
-    tracking_url = String(display_name="tracking url", default="http://mme2.npcomms.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
+    tracking_url = String(display_name="tracking url", default="http://mme.kmoocs.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
     onplay_callback = Integer(display_name="callback second set", default=3, scope=Scope.content, help="트래킹 반복 주기초를 기록")
     org_id = String(display_name="기관ID", default="edX", scope=Scope.content, help="get Org ID")
     # user_id = String(display_name="SESSION ID", default="", scope=Scope.content, help="get Session ID")
@@ -199,8 +199,8 @@ class ZplayerXBlock(XBlock):
 
         context = {
             'display_name': self.display_name,
-            'caption_url': 'http://mme2.npcomms.kr/caption_convert',
-            'delete_url': 'http://mme2.npcomms.kr/catpion_delete',
+            'caption_url': 'http://mme.kmoocs.kr/caption_convert',
+            'delete_url': 'http://mme.kmoocs.kr/catpion_delete',
             'allow_download': self.allow_download,
             'allow_caption_download': self.allow_caption_download,
             'video_poster': self.video_poster,

@@ -52,7 +52,7 @@ def get_caption_info(caption_info):
 
 def get_player_info(
         lang='ko', preload='auto', controls=True, width='100%', height='400', speed=[0.5,1,1.5,2],
-        tracking_url="http://mme2.npcomms.kr/logging", onplay_callback=3
+        tracking_url="http://mme.kmoocs.kr/logging", onplay_callback=3
 ):
     """
 

@@ -97,7 +97,7 @@ vjs.options = {
 
 	'html5': {},
 	'flash': {
-		"swf": 'zplayer.swf'
+		"swf": 'http://mme.kmoocs.kr/origin/zplayer/swf/zplayer.swf'
 	},
 	//new techOrder
 	'youtube': {},
