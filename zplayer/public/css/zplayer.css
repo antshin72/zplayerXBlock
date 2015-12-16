@@ -9,8 +9,8 @@ The control icons are from a custom font. Each icon corresponds to a character
 */
 @font-face {
   font-family: 'VideoJS';
-  src: url('http://mme.kmoocs.kr/origin/zplayer/font/vjs.eot');
-  src: url('http://mme.kmoocs.kr/origin/zplayer/font/vjs.eot?#iefix') format('embedded-opentype'), url('http://mme.kmoocs.kr/origin/zplayer/font/vjs.woff') format('woff'), url('http://mme.kmoocs.kr/origin/zplayer/font/vjs.ttf') format('truetype'), url('http://mme.kmoocs.kr/origin/zplayer/font/vjs.svg#icomoon') format('svg');
+  src: url('http://mme.kmooc.kr/origin/zplayer/font/vjs.eot');
+  src: url('http://mme.kmooc.kr/origin/zplayer/font/vjs.eot?#iefix') format('embedded-opentype'), url('http://mme.kmooc.kr/origin/zplayer/font/vjs.woff') format('woff'), url('http://mme.kmooc.kr/origin/zplayer/font/vjs.ttf') format('truetype'), url('http://mme.kmooc.kr/origin/zplayer/font/vjs.svg#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }

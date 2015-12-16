@@ -51,7 +51,7 @@ class ZplayerXBlock(XBlock):
     video_poster = String(display_name="thumbnail url", default="", scope=Scope.content, help="동영상의 썸네일 경로를 설정합니다.")
 
     source_url = String(display_name="영상스트리밍 URL",
-                        default="http://vod.kmoocs.kr/vod/2015/09/30/6098c795-39a8-5ec5-9683-49f12ba48dfd.mp4",
+                        default="http://vod.kmooc.kr/vod/2015/09/30/6098c795-39a8-5ec5-9683-49f12ba48dfd.mp4",
                         scope=Scope.content, help="영상 스트리밍 주소를 설정합니다.")
     caption_info = List(display_name="자막 정보 URL", default="", scope=Scope.content, help="json형태로 구성된 자막의 정보 취득 URL을 설정합니다.")
 
@@ -68,7 +68,7 @@ class ZplayerXBlock(XBlock):
 
 
     #tracking 관련 정보 파라미터
-    tracking_url = String(display_name="tracking url", default="http://mme.kmoocs.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
+    tracking_url = String(display_name="tracking url", default="http://mme.kmooc.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
     onplay_callback = Integer(display_name="callback second set", default=3, scope=Scope.content, help="트래킹 반복 주기초를 기록")
     org_id = String(display_name="기관ID", default="edX", scope=Scope.content, help="get Org ID")
     # use_caption_list = String(display_name="저장된 캡션목록", default="", scope=Scope.content, help="saved caption language key")
@@ -212,8 +212,8 @@ class ZplayerXBlock(XBlock):
 
         context = {
             'display_name': self.display_name,
-            'caption_url': 'http://mme.kmoocs.kr/caption_convert',
-            'delete_url': 'http://mme.kmoocs.kr/catpion_delete',
+            'caption_url': 'http://mme.kmooc.kr/caption_convert',
+            'delete_url': 'http://mme.kmooc.kr/catpion_delete',
             'allow_download': self.allow_download,
             'allow_caption_download': self.allow_caption_download,
             'video_poster': self.video_poster,
