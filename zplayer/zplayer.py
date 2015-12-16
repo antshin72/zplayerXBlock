@@ -71,6 +71,7 @@ class ZplayerXBlock(XBlock):
     tracking_url = String(display_name="tracking url", default="http://mme.kmoocs.kr/logging", scope=Scope.content, help="트래킹 수집 URL을 입력한다")
     onplay_callback = Integer(display_name="callback second set", default=3, scope=Scope.content, help="트래킹 반복 주기초를 기록")
     org_id = String(display_name="기관ID", default="edX", scope=Scope.content, help="get Org ID")
+    # use_caption_list = String(display_name="저장된 캡션목록", default="", scope=Scope.content, help="saved caption language key")
     # user_id = String(display_name="SESSION ID", default="", scope=Scope.content, help="get Session ID")
 
 
@@ -134,6 +135,13 @@ class ZplayerXBlock(XBlock):
         # ]
         # self.allow_caption_download = True
 
+        # use_caption_list = ''
+        # for caption_list in self.caption_info:
+        #     use_caption_list += caption_list['srclang'] + ','
+
+
+
+
         context = {
             'display_name': self.display_name,
             'allow_download': self.allow_download,
@@ -149,6 +157,7 @@ class ZplayerXBlock(XBlock):
             'studio_modify': self.studio_modify,
             'course_id': course_id,
             'org_id': self.org_id,
+
             # 'user_id': self.user_id,
         }
 
@@ -197,6 +206,10 @@ class ZplayerXBlock(XBlock):
 
         # player_info = params.get_player_info(lang=self.video_lang, preload=self.preload, width=self.video_width, height=self.video_height)
 
+        use_caption_list = ''
+        for caption_list in self.caption_info:
+            use_caption_list += caption_list['srclang'] + ','
+
         context = {
             'display_name': self.display_name,
             'caption_url': 'http://mme.kmoocs.kr/caption_convert',
@@ -213,7 +226,9 @@ class ZplayerXBlock(XBlock):
             'video_width': self.video_width,
             'video_height': self.video_height,
             'studio_modify': self.studio_modify,
+            'use_caption_list': use_caption_list[:-1],
         }
+
 
 
         html = self.render_template('static/html/zplayer_edit.html', context)

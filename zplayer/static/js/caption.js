@@ -39,6 +39,14 @@ $(function(){
         overlay();
 	});
 
+    var use_caption_list = $("#use_caption_list").val().split(',');
+
+    $.each(use_caption_list, function (k, v) {
+        $("#zplayer_edit_caption_lang option[value='"+v+"']").prop('disabled', true);
+    });
+
+    //$("#zplayer_edit_caption_lang option[value='"+v+"']").prop('disabled', true);
+
         //todo 클릭시에도 이벤트가 안걸린다 확인 할것
         // devstack, fullstack에 설치하여 해당 디자인 등을 수정해야 한다.
         // 그후 코스 저장 크래킹로그 연동 부분을 처리하면 끝이다 ㅠㅠ

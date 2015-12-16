@@ -7,6 +7,7 @@
 <input type="hidden" value="{{ preload }}" id="preload">
 <input type="hidden" value="{{ video_width }}" id="video_width">
 <input type="hidden" value="{{ video_height }}" id="video_height">
+<input type="hidden" value="{{ use_caption_list }}" id="use_caption_list">
 <div class="wrapper-comp-settings editor-with-buttons is-active" id="settings-tab">
     <ul class="list-input settings-list">
 
@@ -44,6 +45,7 @@
                     <option value="eng">영어</option>
                     <option value="ja">일본어</option>
                     <option value="zh-CN">중국어(북경어)</option>
+                    <option value="zh-TW">중국어(광둥어)</option>
                     <option value="fr">프랑스어</option>
                     <option value="ru">러시아어</option>
                     <option value="de">독일어</option>
@@ -58,7 +60,7 @@
                     <option value="tr">터키어</option>
                     <option value="uk">영어(영국식)</option>
                     <option value="vi">베트남</option>
-                    <option value="zh-TW">중국어(광둥어)</option>
+
                 </select>
 
 
@@ -67,7 +69,14 @@
 
             </div>
             <span class="tip setting-help">
-                <ul id="caption_list"></ul>
+                <ul id="caption_list">
+
+                    {% if allow_caption_download != "" %}
+                        {% for x in caption_info %}
+                            <li>{{ x.label }} ({{ x.srclang }}) {{ x.src }}<button class="input setting-input caption-del" data-lang="{{x.srclang}}" data-path="{{ x.src }}" onclick="remote_caption_delete($(this))">자막삭제</button></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
             </span>
 
         </li>
