@@ -51,7 +51,7 @@ class ZplayerXBlock(XBlock):
     video_poster = String(display_name="thumbnail url", default="", scope=Scope.content, help="동영상의 썸네일 경로를 설정합니다.")
 
     source_url = String(display_name="영상스트리밍 URL",
-                        default="http://vod.kmooc.kr/vod/2015/09/30/6098c795-39a8-5ec5-9683-49f12ba48dfd.mp4",
+                        default="http://vod.kmoocs.kr/vod/2015/09/30/6098c795-39a8-5ec5-9683-49f12ba48dfd.mp4",
                         scope=Scope.content, help="영상 스트리밍 주소를 설정합니다.")
     caption_info = List(display_name="자막 정보 URL", default="", scope=Scope.content, help="json형태로 구성된 자막의 정보 취득 URL을 설정합니다.")
 
